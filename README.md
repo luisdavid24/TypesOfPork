@@ -7,14 +7,8 @@ This project responds to the challenge posed by the teacher.
 
 ## Table of Contents
 
-
-- [Usage](#usage)
 - [Technology](#technology)
 - [Contact](#contact)
-
-
-## Usage:
-To use the project, you must first run the backend (implemented in Spring Boot) and then execute the SQL file to set up the database. Afterward, you can start the frontend using a live server.
 
 ## Technology
 The technologies used in the project were:

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tipos de Carnes de Cerdo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #4b0082; /* Morado */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .filter-container {
+            margin-bottom: 20px;
+        }
+        .filter-container label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .filter-container input,
+        .filter-container button {
+            padding: 8px 12px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .filter-container button {
+            background-color: #4b0082; /* Morado */
+            color: white;
+            cursor: pointer;
+        }
+        .filter-container button:hover {
+            background-color: #3a006a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #4b0082; /* Morado */
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .total-container {
+            background-color: #4b0082; /* Morado */
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .total-container p {
+            margin: 5px 0;
+        }
+        #exportButton {
+            background-color: #333; /* Negro */
+            color: white;
+        }
+        #exportButton:hover {
+            background-color: #000;
+        }
+    </style>
+    <script>
+        function loadXMLDoc(filename) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", filename, false);
+            xhttp.send();
+            return xhttp.responseXML;
+        }
+
+        function displayResult(typeFilter) {
+            var xml = loadXMLDoc("data.xml");
+            var xsl = loadXMLDoc("transform.xsl");
+
+            if (window.ActiveXObject || "ActiveXObject" in window) {
+                // For IE
+                var ex = xml.transformNode(xsl);
+                document.getElementById("example").innerHTML = ex;
+            } else if (document.implementation && document.implementation.createDocument) {
+                // For other browsers
+                var xsltProcessor = new XSLTProcessor();
+                xsltProcessor.importStylesheet(xsl);
+                if (typeFilter) {
+                    xsltProcessor.setParameter(null, "typeFilter", typeFilter);
+                }
+                var resultDocument = xsltProcessor.transformToFragment(xml, document);
+                document.getElementById("example").innerHTML = "";
+                document.getElementById("example").appendChild(resultDocument);
+            }
+        }
+
+        function exportTableToCSV(filename) {
+            var csv = [];
+            var rows = document.querySelectorAll("table tr");
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll("td, th");
+
+                for (var j = 0; j < cols.length; j++) 
+                    row.push(cols[j].innerText);
+
+                csv.push(row.join(","));        
+            }
+
+            // Download CSV
+            var csvFile;
+            var downloadLink;
+
+            csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+
+            downloadLink = document.createElement("a");
+            downloadLink.download = filename;
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+        }
+
+        window.onload = function() {
+            displayResult();
+            document.getElementById("filterButton").addEventListener("click", function() {
+                var filterValue = document.getElementById("typeFilter").value;
+                displayResult(filterValue);
+            });
+            document.getElementById("exportButton").addEventListener("click", function() {
+                exportTableToCSV("meats.csv");
+            });
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="filter-container">
+            <label for="typeFilter">Filtrar por Tipo: </label>
+            <input type="text" id="typeFilter" placeholder="Escribe un tipo de carne" />
+            <button id="filterButton">Filtrar</button>
+            <button id="exportButton">Exportar a CSV</button>
+        </div>
+        <div id="example"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<data>
+    <meat type="loin" weight="5.5" price="20">
+        <description>Loin is a lean cut with a mild flavor.</description>
+    </meat>
+    <meat type="ham" weight="8.0" price="30">
+        <description>Ham is a cut from the hind leg, often cured.</description>
+    </meat>
+    <meat type="ribs" weight="4.0" price="15">
+        <description>Ribs are flavorful cuts perfect for grilling.</description>
+    </meat>
+    <meat type="shoulder" weight="10.0" price="25">
+        <description>Shoulder is ideal for slow cooking and roasting.</description>
+    </meat>
+</data>
